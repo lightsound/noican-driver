@@ -1,8 +1,7 @@
 # noican-driver
 
 The virtual audio driver (`Noican.driver`, device "Noican Microphone")
-shipped with [Noican](https://github.com/lightsound/noican), a noise-cancelling
-virtual microphone for macOS.
+shipped with Noican, a noise-cancelling virtual microphone for macOS.
 
 **This repository is the complete corresponding source for that driver**,
 published under the GNU General Public License v3.0 as required by its
