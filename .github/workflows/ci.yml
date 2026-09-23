@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "cursor/**"]
+    tags: ["driver-v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and ad-hoc sign the driver
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Check the icon is what scripts/make-icon.py generates
+        run: |
+          python3 scripts/make-icon.py "$RUNNER_TEMP/Microphone.icns"
+          cmp resources/Microphone.icns "$RUNNER_TEMP/Microphone.icns"
+          iconutil --convert iconset --output "$RUNNER_TEMP/Microphone.iconset" \
+            resources/Microphone.icns
+      - name: Build (compile check; coreaudiod loads only Developer-ID builds)
+        run: bash scripts/build-driver.sh
+      - name: Check the bundled notice and icon
+        run: |
+          resources=dist/Noican.driver/Contents/Resources
+          grep -qF "https://github.com/lightsound/noican-driver" "$resources/LICENSE"
+          test -f "$resources/Microphone.icns"
+          test ! -e "$resources/BlackHole.icns"
+      - name: Check the tag names the bundle version
+        if: startsWith(github.ref, 'refs/tags/driver-v')
+        run: |
+          version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \
+            dist/Noican.driver/Contents/Info.plist)"
+          test "driver-v$version" = "$GITHUB_REF_NAME" || {
+            echo "tag $GITHUB_REF_NAME does not match bundle version $version" >&2
+            exit 1
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: noican-driver-universal-adhoc
+          path: dist/Noican.driver
