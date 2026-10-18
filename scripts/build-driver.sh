@@ -121,7 +121,15 @@ GCC_DEFS=(
 )
 PREPROCESSOR_DEFS="${GCC_DEFS[*]}"
 
-rm -rf "$BUILD_DIR" "$DRIVER"
+# $BUILD_DIR holds the xcodebuild intermediates (OBJROOT/SYMROOT) and is
+# wiped by default so an ad-hoc local build leaves only the bundle behind.
+# NOICAN_DRIVER_KEEP_BUILD_DIR=1 keeps it across runs: xcodebuild then does
+# an incremental build, which is what makes the directory worth caching in
+# CI (the final bundle still always rebuilds and re-signs).
+if [[ "${NOICAN_DRIVER_KEEP_BUILD_DIR:-}" != "1" ]]; then
+  rm -rf "$BUILD_DIR"
+fi
+rm -rf "$DRIVER"
 mkdir -p "$BUILD_DIR"
 
 # Signing is disabled inside xcodebuild: the bundle's resources are edited
@@ -175,5 +183,7 @@ else
 fi
 
 codesign --verify --deep --strict "$DRIVER"
-rm -rf "$BUILD_DIR"
+if [[ "${NOICAN_DRIVER_KEEP_BUILD_DIR:-}" != "1" ]]; then
+  rm -rf "$BUILD_DIR"
+fi
 echo "$DRIVER"

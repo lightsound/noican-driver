@@ -180,6 +180,10 @@ bash scripts/build-driver.sh
 NOICAN_CODESIGN_IDENTITY="Developer ID Application: Example (TEAMID)" \
   bash scripts/build-driver.sh
 
+# Keep the xcodebuild intermediates (dist/driver-build) across runs for an
+# incremental rebuild; the bundle is still rebuilt, rewritten, and re-signed:
+NOICAN_DRIVER_KEEP_BUILD_DIR=1 bash scripts/build-driver.sh
+
 # Install (copies dist/Noican.driver to /Library/Audio/Plug-Ins/HAL,
 # restarts coreaudiod; sudo):
 bash scripts/install-driver.sh
