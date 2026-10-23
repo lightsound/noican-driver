@@ -4,7 +4,7 @@
 [joycast.driver](https://github.com/joymacstudio/joycast.driver) pattern.
 Upstream [ExistentialAudio/BlackHole](https://github.com/ExistentialAudio/BlackHole)
 is a git submodule at `external/blackhole`, pinned to the upstream release
-tag `v0.7.1`, and is **never patched** — every customization is injected at
+tag `v0.7.2`, and is **never patched** — every customization is injected at
 build time through GCC preprocessor definitions and xcodebuild settings by
 `scripts/build-driver.sh`. Updating upstream reduces to bumping the
 submodule to a newer release tag and re-checking the macro list below
@@ -29,7 +29,7 @@ which meeting apps then select as their microphone.
 
 ### How the UID is produced
 
-BlackHole (v0.7.1) has **no `#ifndef` guard on its UID macros** — they are
+BlackHole (v0.7.2) has **no `#ifndef` guard on its UID macros** — they are
 derived, so the UID is controlled indirectly:
 
 ```c
@@ -127,9 +127,8 @@ unity.
 
 Deliberately **not** passed:
 
-- `kLatency_Frame_Size` — v0.7.1 defines it without an `#ifndef` guard;
-  passing it would redefine the macro. The upstream default (0 frames) is
-  what we want anyway.
+- `kLatency_Frame_Size` — the upstream default (0 frames) is what we
+  want. It is `#ifndef`-guarded, so it can be passed if that changes.
 - `kEnableVolumeControl`, `kCanBeDefaultDevice`,
   `kCanBeDefaultSystemDevice`, `kBox_Aquired` — upstream defaults kept.
 
@@ -204,8 +203,7 @@ build.
 Expected benign compiler output (upstream code, unpatched by design):
 `-Wformat-extra-args` on the `RETURN_FORMATTED_STRING` helpers — with
 `kHas_Driver_Name_Format=false` the `CFStringCreateWithFormat` branch is
-dead but still compiled, and our verbatim strings carry no `%i` — and the
-upstream `MACOSX_DEPLOYMENT_TARGET = 10.10` deprecation warning.
+dead but still compiled, and our verbatim strings carry no `%i`.
 
 The device icon ships at `resources/Microphone.icns` and is copied into
 the bundle by the build (`kPlugIn_Icon`, served via

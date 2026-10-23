@@ -97,8 +97,8 @@ fi
 # One space-separated build-setting value; xcodebuild splits it into -D
 # tokens. \" survives as the C string-literal quote and "\ " keeps names
 # with spaces inside a single token (upstream README, "Customizing
-# BlackHole"). kLatency_Frame_Size is deliberately absent: v0.7.1 defines
-# it without an #ifndef guard, so passing it would redefine the macro.
+# BlackHole"). kLatency_Frame_Size is deliberately absent: the upstream
+# default (0 frames) is what we want.
 # The primary device is the visible 1-in/1-out loopback; the mirror stays
 # hidden with input and output, like stock BlackHole (explicit for
 # documentation).
