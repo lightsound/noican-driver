@@ -13,7 +13,7 @@ the driver and is not covered by this license.
 
 | Path | Contents |
 |---|---|
-| `external/blackhole` | Upstream BlackHole as a git submodule, pinned to release `v0.7.1` and never patched |
+| `external/blackhole` | Upstream BlackHole as a git submodule, pinned to release `v0.7.2` and never patched |
 | `scripts/build-driver.sh` | Builds `dist/Noican.driver`; every customization (names, UID, channels, icon, factory UUID) is injected at build time |
 | `scripts/install-driver.sh`, `scripts/uninstall-driver.sh` | Install into / remove from `/Library/Audio/Plug-Ins/HAL` and restart `coreaudiod` |
 | `resources/Microphone.icns`, `scripts/make-icon.py` | Device icon copied into the bundle, and the script that generates it |
